@@ -1,60 +1,77 @@
 package com.example.androidprogramming
 
+import android.content.Intent
 import android.os.Bundle
-import android.os.SystemClock
-import android.widget.Button
-import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.example.androidprogramming.databinding.MainActivityBinding
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var tvTime: TextView
-    private lateinit var btnStart: Button
-    private lateinit var btnStop: Button
-
-    private var startTime = 0L
-    private var elapsedTime = 0L
-    private var isRunning = false
+    val USER_ID: String = "2471506"
+    val USER_PASSWORD: String = "1234"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        enableEdgeToEdge()
 
-        tvTime = findViewById(R.id.tvTime)
-        btnStart = findViewById(R.id.btnStart)
-        btnStop = findViewById(R.id.btnStop)
+        val binding = MainActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        btnStart.setOnClickListener {
-            if (!isRunning) {
-                startTime = SystemClock.elapsedRealtime() - elapsedTime
-                isRunning = true
-                startTimer()
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        val prefs = getSharedPreferences("service", MODE_PRIVATE)
+        val edit = prefs.edit()
+
+        val savedUserId = prefs.getString("user_id", "")
+        binding.inputId.setText(savedUserId)
+        if (!savedUserId.isNullOrEmpty()) {
+            binding.rememberCheckBox.isChecked = true
+        }
+
+        binding.loginButton.setOnClickListener {
+            val inputId = binding.inputId.text.toString().trim()
+            val inputPassword = binding.inputPassword.text.toString().trim()
+
+            if (inputId.isEmpty() || inputPassword.isEmpty()) {
+                Toast.makeText(this, "아이디와 비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show()
+            } else if (inputId == USER_ID && inputPassword == USER_PASSWORD) {
+                Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
+
+                if(binding.rememberCheckBox.isChecked) {
+                    edit.putString("user_id", inputId)
+                } else {
+                    edit.putString("user_id", "")
+                    binding.inputId.setText("")
+                }
+                edit.apply()
+                binding.inputPassword.setText("")
+
+                val intent = Intent(this, StopwatchActivity::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "아이디 또는 비밀번호가 올바르지 않습니다.", Toast.LENGTH_SHORT).show()
             }
         }
 
-        btnStop.setOnClickListener {
-            isRunning = false
-        }
-    }
-
-    private fun startTimer() {
-        lifecycleScope.launch {
-            while (isRunning) {
-                elapsedTime = SystemClock.elapsedRealtime() - startTime
-                tvTime.text = formatTime(elapsedTime)
-                delay(100)
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                var initTime = 0L
+                if (System.currentTimeMillis() - initTime <= 2000) {
+                    finish()
+                } else {
+                    initTime = System.currentTimeMillis()
+                    Toast.makeText(this@MainActivity, "뒤로 버튼을 한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+                }
             }
-        }
+        })
     }
 
-    private fun formatTime(ms: Long): String {
-        val seconds = (ms / 1000) % 60
-        val minutes = (ms / (1000 * 60)) % 60
-        val hours = (ms / (1000 * 60 * 60))
-
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
-    }
 }
