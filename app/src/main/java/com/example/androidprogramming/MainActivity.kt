@@ -35,12 +35,19 @@ class MainActivity : AppCompatActivity() {
             } else if (inputId == USER_ID && inputPassword == USER_PASSWORD) {
                 Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
 
-                val intent = Intent(this, HomeActivity::class.java)
+                val intent = Intent(this, StopwatchActivity::class.java)
                 startActivity(intent)
-                finish()
             } else {
                 Toast.makeText(this, "아이디 또는 비밀번호가 올바르지 않습니다.", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.rememberCheckBox.setOnClickListener {
+            binding.rememberCheckBox.isChecked = !binding.rememberCheckBox.isChecked;
+        }
+
+        binding.rememberText.setOnClickListener {
+            binding.rememberCheckBox.isChecked = !binding.rememberCheckBox.isChecked;
         }
     }
 }
