@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">안드로이드앱프로그래밍</string>
+    
+    <!--  MainActivity  -->
+    <string name="loginTitle">스톱워치 서비스 로그인</string>
+    <string name="login">로그인</string>
+    <string name="placeholder_student_id">학번</string>
+    <string name="placeholder_password">비밀번호</string>
+    <string name="remember">아이디 기억하기</string>
+    <string name="find_my_account">아이디/비밀번호 찾기</string>
+    
+    <!--  StopwatchActivity  -->
+    <string name="start">시작</string>
+    <string name="stop">중지</string>
+    <string name="record">기록</string>
+    <string name="reset">초기화</string>
+</resources>

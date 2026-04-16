@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">AndroidProgramming</string>
+
+    <!--  MainActivity  -->
+    <string name="loginTitle">StopwatchService Login</string>
+    <string name="login">Login</string>
+    <string name="placeholder_student_id">ID</string>
+    <string name="placeholder_password">Password</string>
+    <string name="remember">Remember My Id</string>
+    <string name="find_my_account">Find My ID/Password</string>
+
+    <!--  StopwatchActivity  -->
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="record">Record</string>
+    <string name="reset">Reset</string>
 </resources>
